@@ -40,6 +40,42 @@ class Memy:
 
     @commands.command(pass_context=True, hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def wat(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://i.imgur.com/uyoovgR.png")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def pissedblanc(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://i.imgur.com/vHFkNgT.gif")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def guzmangery(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://i.imgur.com/Ru5g0M7.png")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def delet(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://i.imgur.com/oUIjmIB.jpg")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def groodon(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://i.imgur.com/WO7P2bd.png")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def sebe(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://i.imgur.com/mk2oVTD.jpg")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def derpsebe(self, ctx):
         """Memes."""
         await self._meme(ctx, "https://orig00.deviantart.net/d19e/f/2009/198/a/c/buizel_teeter_dance_by_lucario375.gif")
