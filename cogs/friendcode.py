@@ -7,7 +7,7 @@ from sys import argv
 
 class FriendCode:
     """
-    Stores and saves FC's in a database.
+    Piku ogarnij indentacje, jesli to widzisz, *hugs*, oraz poczytaj dokumentacje discord.py
     """
     def __init__(self, bot):
         self.bot = bot
@@ -21,7 +21,7 @@ class FriendCode:
         print('Unloading fc.sqlite')
         self.conn.close()
 
-    # based on https://github.com/megumisonoda/SaberBot/blob/master/lib/saberbot/valid_fc.rb
+    # oparte na https://github.com/megumisonoda/SaberBot/blob/master/lib/saberbot/valid_fc.rb
     def verify_fc(self, fc):
         fc = int(fc.replace('-', ''))
         if fc > 0x7FFFFFFFFF or fc < 0x0100000000:

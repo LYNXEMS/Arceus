@@ -39,13 +39,14 @@ class Ogolne:
         self.bot = bot
         self.stopwatches = {}
         self.ball = ["Z tego co widzę, to tak.", "Na pewno.", "Zdecydowanie tak.", "Prawdopodobnie tak.", "Bardzo możliwe.", "Wygląda na to, że tak.",
-                     "Zapytaj Fluffa.", "Gwiazdy wskazują, że tak.", "Gwiazdy wskazują, że nie.", "Nie jestem pewna.", "Nie mam pojęcia lol",
+                     "Zapytaj Fluffa.", "Zapytaj Guzmy.", "Zapytaj Aloesa.", "Gwiazdy wskazują, że tak.", "Gwiazdy wskazują, że nie.", "Nie jestem pewny.", "Nie mam pojęcia lol",
 					 "Myślę, że tak.", "Bez wątpienia.", "Yep.", "Tak.", "Nie.", "Nope.", "Tak. Nie. Może?", "Tak, na sto procent tak.",
-					 "Nie wydaje mi się.", "Jestem pewna, że nie.", "Możesz na to liczyć.", "Odpowiedź jest niejasna, spróbuj ponownie.",
+					 "Nie wydaje mi się.", "Jestem pewny, że nie.", "Możesz na to liczyć.", "Odpowiedź jest niejasna, spróbuj ponownie.",
                      "Ukradli mi kulę, spróbuj ponownie później.", "Sam/a sobie odpowiedz na to pytanie.", "Nie powiem ci, hihi.", "NOSZ KURWA SOWE", "Majke popsuła mi system, spróbuj jeszcze raz.",
-					 "Kula czasowo niedostępna, spróbuj później.", "Nie jestem pewna, nie widzę odpowiedzi...", "Skup się i zadaj to pytanie jeszcze raz.",
-                     "Eeeee... nie.", "Nie liczyłabym na to.", "Tak, jeżeli oddasz mi cześć.", "Moja odpowiedź brzmi - nie.", "Moje źródła mówią mi, że nie.",
-					 "Orochi mnie trolluje, spróbuj ponownie za chwilę.", "Oczywiście.", "Nie ma szans.", "Raczej tak.", "Raczej nie.", "Wygląda na to, że nie.", "Wątpię."]
+					 "Kula czasowo niedostępna, spróbuj później.", "Nie jestem pewny, nie widzę odpowiedzi...", "Skup się i zadaj to pytanie jeszcze raz.",
+                     "Eeeee... nie.", "Nie liczyłbym na to.", "Tak, jeżeli oddasz mi cześć.", "Moja odpowiedź brzmi - nie.", "Moje źródła mówią mi, że nie.",
+					 "Moja odpowiedź brzmi - tak.", "Oczywiście.", "Nie ma szans.", "Raczej tak.", "Raczej nie.", "Wygląda na to, że nie.", "Wątpię.", "You don't have enough badges to train me.", 
+					 "Giratina mnie trolluje, spróbuj ponownie później", "Jeden Pokébreeder powie tak, inny Pokébreeder powie nie...", "Szybciej Zekrom zbieleje.", "Zapomnij o tym."]
         self.poll_sessions = []
 
     @commands.command(hidden=True)
@@ -122,10 +123,10 @@ class Ogolne:
             outcome = cond[(player_choice, red_choice)]
 
         if outcome is True:
-            await self.bot.say("{} Argh, Przegrałam {}!"
+            await self.bot.say("{} Argh, Przegrałem {}!"
                                "".format(red_choice.value, author.mention))
         elif outcome is False:
-            await self.bot.say("{} Ha, Wygrałam {}!"
+            await self.bot.say("{} Ha, Wygrałem {}!"
                                "".format(red_choice.value, author.mention))
         else:
             await self.bot.say("{} Remis {}!"

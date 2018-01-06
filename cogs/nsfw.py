@@ -32,7 +32,7 @@ class Nsfw:
                     await self.bot.add_roles(author, discord.utils.get(server.roles, name="NSFW"))
                     await self.bot.send_message(author, "Dostęp przyznany")
                 else:
-                    await self.bot.say("Brak odpowiedzi lub niepoprawna odpowiedź, jeśli chcesz ponownie spróbować uzyskać dostęp, ponownie wpiszk komendę.")
+                    await self.bot.send_message(author, "Brak odpowiedzi lub niepoprawna odpowiedź, jeśli chcesz ponownie spróbować uzyskać dostęp, ponownie wpiszk komendę.")
                     return
             except:
                 await self.bot.say("Brak odpowiedzi lub niepoprawna odpowiedź, jeśli chcesz ponownie spróbować uzyskać dostęp, ponownie wpiszk komendę.")

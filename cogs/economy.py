@@ -72,11 +72,15 @@ class SMReel(Enum):
     catto     = "<:catto:328286102177841155>"
     ban       = "<:ban:330115327553830912>"
     flajgon   = "<:smolflajgon:329513435907883018>"
+    scrafty   = "<:scrafty:380070361741524993>"
+    nid       = "<:nid:380070361300992000>"
+    chatot    = "<:chatot:380070361900777472>"
+    arcanine  = "<:arcanine:380070361204523009>"
 
 PAYOUTS = {
     (SMReel.reshiram, SMReel.reshiram, SMReel.reshiram) : {
-        "payout" : lambda x: x * 1000 + x,
-        "phrase" : "JACKPOT! STAY FLUFFY! Stawka * 1000!"
+        "payout" : lambda x: x * 1337 + x,
+        "phrase" : "JACKPOT! STAY FLUFFY! Stawka * 1337!"
     },
     (SMReel.yanma, SMReel.yanma, SMReel.yanma) : {
         "payout" : lambda x: x + 1000,
@@ -84,7 +88,7 @@ PAYOUTS = {
     },
     (SMReel.buizl, SMReel.buizl, SMReel.buizl) : {
         "payout" : lambda x: x + 800,
-        "phrase" : "3 🅱uizle! +800!"
+        "phrase" : "3 ??uizle! +800!"
     },
     (SMReel.reshiram, SMReel.reshiram) : {
         "payout" : lambda x: x * 4 + x,
@@ -92,7 +96,7 @@ PAYOUTS = {
     },
     (SMReel.buizl, SMReel.buizl) : {
         "payout" : lambda x: x * 3 + x,
-        "phrase" : "Dwa 🅱uizle, stawka * 3!"
+        "phrase" : "Dwa ??uizle, stawka * 3!"
     },
     (SMReel.harold, SMReel.harold, SMReel.harold) : {
         "payout" : lambda x: x + 1,
@@ -290,8 +294,7 @@ class SetParser:
 
 class Economy:
     """Ekonomia
-
-    Stań się bogaty i udawaj, że udalo ci się w życiu z naszą zmyśloną walutą!"""
+    Stan sie bogaty i udawaj, ze udalo ci sie w zyciu z nasza zmyslona waluta!"""
 
     def __init__(self, bot):
         global default_settings
@@ -308,7 +311,7 @@ class Economy:
 
     @commands.group(name="bank", pass_context=True)
     async def _bank(self, ctx):
-        """Komendy odnoszące się do banku"""
+        """Komendy odnoszace sie do banku"""
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
 
@@ -325,14 +328,13 @@ class Economy:
             await self.bot.say("{} Konto otwarte. Balans: {}"
                                "".format(author.mention, account.balance))
         except AccountAlreadyExists:
-            await self.bot.say("{} Już masz konto w"
+            await self.bot.say("{} Juz masz konto w"
                                " banku PSP.".format(author.mention))
 
     @_bank.command(pass_context=True)
     async def srodki(self, ctx, user: discord.Member=None):
-        """Pokazuje saldo użytkownika.
-
-        Domyślnie pokazuje twoje."""
+        """Pokazuje saldo uzytkownika.
+        Domyslnie pokazuje twoje."""
         if not user:
             user = ctx.message.author
             try:
@@ -341,70 +343,68 @@ class Economy:
             except NoAccount:
                 await self.bot.say("{} Nie masz konta w"
                                    " banku PSP. Uzyj `{}bank zarejestruj`"
-                                   " aby otworzyć.".format(user.mention,
+                                   " aby otworzyc.".format(user.mention,
                                                           ctx.prefix))
         else:
             try:
                 await self.bot.say("Saldo {} to {}".format(
                     user.name, self.bank.get_balance(user)))
             except NoAccount:
-                await self.bot.say("Ten użytkownik nie ma konta.")
+                await self.bot.say("Ten uzytkownik nie ma konta.")
 
     @_bank.command(pass_context=True)
     async def transfer(self, ctx, user: discord.Member, sum: int):
-        """Przenosi walutę do innych użytkowników."""
+        """Przenosi walute do innych uzytkownikow."""
         author = ctx.message.author
         try:
             self.bank.transfer_credits(author, user, sum)
-            logger.info("{}({}) przelał {} EV {}({})".format(
+            logger.info("{}({}) przelal {} EV {}({})".format(
                 author.name, author.id, sum, user.name, user.id))
-            await self.bot.say("{} EV zostało przelane {}"
+            await self.bot.say("{} EV zostalo przelane {}"
                                ".".format(sum, user.name))
         except NegativeValue:
             await self.bot.say("Minimalna suma przelewu to 1.")
         except SameSenderAndReceiver:
-            await self.bot.say("Nie możesz przelać EV sobie.")
+            await self.bot.say("Nie mozesz przelac EV sobie.")
         except InsufficientBalance:
-            await self.bot.say("Nie masz wystarczających środków aby zrealizować operacje.")
+            await self.bot.say("Nie masz wystarczajacych srodkow aby zrealizowac operacje.")
         except NoAccount:
-            await self.bot.say("Ten użytkownik nie ma konta.")
+            await self.bot.say("Ten uzytkownik nie ma konta.")
 
     @_bank.command(name="set", pass_context=True)
     @checks.admin_or_permissions(ban_members=True)
     async def _set(self, ctx, user: discord.Member, credits: SetParser):
-        """Ustala saldo konta bankowego wskazanego użytkownika. Wpisz help dla listy komend.
-
-        Dodanie plusa/minusa dodaje/odejmuje walutę z konta, zamiast ustalać określoną sumę.
-
+        """Ustala saldo konta bankowego wskazanego uzytkownika. Wpisz help dla listy komend.
+        Dodanie plusa/minusa dodaje/odejmuje walute z konta, zamiast ustalac okreslona sume.
         Examples:
-            bank set @Twentysix 26 - Ustala, że konto @Twentysix będzie mialo 26 EV
+            bank set @Twentysix 26 - Ustala, ze konto @Twentysix bedzie mialo 26 EV
             bank set @Twentysix +2 - Dodaje 2 EV
             bank set @Twentysix -6 - Odejmuje 6 EV"""
         author = ctx.message.author
         try:
             if credits.operation == "deposit":
                 self.bank.deposit_credits(user, credits.sum)
-                logger.info("{}({}) dał {} EV {} ({})".format(
+                logger.info("{}({}) dal {} EV {} ({})".format(
                     author.name, author.id, credits.sum, user.name, user.id))
-                await self.bot.say("{} EV zostało dodane {}"
+                await self.bot.say("{} EV zostalo dodane {}"
                                    "".format(credits.sum, user.name))
             elif credits.operation == "withdraw":
                 self.bank.withdraw_credits(user, credits.sum)
-                logger.info("{}({}) zabrał {} EV {} ({})".format(
+                logger.info("{}({}) zabral {} EV {} ({})".format(
                     author.name, author.id, credits.sum, user.name, user.id))
-                await self.bot.say("{} EV zostało zabrane {}"
+                await self.bot.say("{} EV zostalo zabrane {}"
                                    "".format(credits.sum, user.name))
             elif credits.operation == "set":
                 self.bank.set_credits(user, credits.sum)
-                logger.info("{}({}) ustawił {} EV na koncie {} ({})"
+                logger.info("{}({}) ustawil {} EV na koncie {} ({})"
                             "".format(author.name, author.id, credits.sum,
                                       user.name, user.id))
-                await self.bot.say("EV {} zostało ustawione na {}".format(
+                await self.bot.say("EV {} zostalo ustawione na {}".format(
                     user.name, credits.sum))
         except InsufficientBalance:
-            await self.bot.say("Użytkownik nie ma wystarczających środków.")
+            await self.bot.say("Uzytkownik nie ma wystarczajacych srodkow.")
         except NoAccount:
-            await self.bot.say("Użytkowanik nie ma konta.")
+            await self.bot.say("Uzytkowanik nie ma konta.")
 
     @_bank.command(pass_context=True, no_pm=True)
     @checks.serverowner_or_permissions(administrator=True)
@@ -412,11 +412,11 @@ class Economy:
         """Usuwa WSZYSTKIE konta bankowe na serwerze!"""
         if confirmation is False:
             await self.bot.say("To Usunie wszystkie konta bankowe! "
-                               "Jeśli jesteś pewny wpisz "
+                               "Jesli jestes pewny wpisz "
                                "{}bank reset yes".format(ctx.prefix))
         else:
             self.bank.wipe_bank(ctx.message.server)
-            await self.bot.say("Wszystkie konta zostały usunięte.")
+            await self.bot.say("Wszystkie konta zostaly usuniete.")
 
     @commands.command(pass_context=True, no_pm=True)
     async def wyplata(self, ctx):  # TODO
@@ -428,9 +428,9 @@ class Economy:
         if self.bank.account_exists(author):
             if discord.utils.get(server.roles, name="Gym Leader") in author.roles:
                 rolepay = "LEADER_CREDITS"
-            elif discord.utils.get(server.roles, name="Elit3") in author.roles:
+            elif discord.utils.get(server.roles, name="Znany") in author.roles:
                 rolepay = "ELITE_CREDITS"
-            elif discord.utils.get(server.roles, name="Zweryfikowany") in author.roles:
+            elif discord.utils.get(server.roles, name="Członek") in author.roles:
                 rolepay = "REGISTERED_CREDITS"
             else:
                 rolepay = "PAYDAY_CREDITS"
@@ -443,7 +443,7 @@ class Economy:
                     self.payday_register[server.id][
                         id] = int(time.perf_counter())
                     await self.bot.say(
-                        "{} ~~Masz, poczęstuj się~~ Hej, oto twoja dzienna wypłata. Powodzenia! (+{}"
+                        "{} ~~Masz, poczestuj sie~~ Hej, oto twoja dzienna wyplata. Powodzenia! (+{}"
                         " EV!)".format(
                             author.mention,
                             str(self.settings[server.id][rolepay])))
@@ -451,25 +451,24 @@ class Economy:
                     dtime = self.display_time(
                         self.settings[server.id]["PAYDAY_TIME"] - seconds)
                     await self.bot.say(
-                        "{} Za wcześnie na kolejną wypłatę - musisz jeszcze"
-                        " poczekać {}.".format(author.mention, dtime))
+                        "{} Za wczesnie na kolejna wyplate - musisz jeszcze"
+                        " poczekac {}.".format(author.mention, dtime))
             else:
                 self.payday_register[server.id][id] = int(time.perf_counter())
                 self.bank.deposit_credits(author, self.settings[
                                           server.id][rolepay])
                 await self.bot.say(
-                    "{} ~~Masz, poczęstuj się~~ Hej, oto twoja dzienna wypłata. Powodzenia! (+{} EV!)".format(
+                    "{} ~~Masz, poczestuj sie~~ Hej, oto twoja dzienna wyplata. Powodzenia! (+{} EV!)".format(
                         author.mention,
                         str(self.settings[server.id][rolepay])))
         else:
-            await self.bot.say("{} Potrzebujesz konta bankowego, żeby otrzymać EV."
-                               " Wpisz `{}bank zarejestruj`,aby je założyć!.".format(
+            await self.bot.say("{} Potrzebujesz konta bankowego, zeby otrzymac EV."
+                               " Wpisz `{}bank zarejestruj`,aby je zalozyc!.".format(
                                    author.mention, ctx.prefix))
 
     @commands.group(pass_context=True)
     async def najbogatsi(self, ctx):
         """Server / global leaderboard
-
         Defaults to server"""
         if ctx.invoked_subcommand is None:
             await ctx.invoke(self._server_leaderboard)
@@ -477,7 +476,6 @@ class Economy:
     @najbogatsi.command(name="server", pass_context=True)
     async def _server_leaderboard(self, ctx, top: int=10):
         """Prints out the server's leaderboard
-
         Defaults to top 10"""
         # Originally coded by Airenkun - edited by irdumb
         server = ctx.message.server
@@ -523,15 +521,15 @@ class Economy:
                 raise InsufficientBalance
             await self.slot_machine(author, bid)
         except NoAccount:
-            await self.bot.say("{} Potrzebujesz konta bankowego, żeby zagrać na jednorękim "
-                               "bandycie. Wpisz `{}bank rejestracja` aby takie założyć."
+            await self.bot.say("{} Potrzebujesz konta bankowego, zeby zagrac na jednorekim "
+                               "bandycie. Wpisz `{}bank rejestracja` aby takie zalozyc."
                                "".format(author.mention, ctx.prefix))
         except InsufficientBalance:
-            await self.bot.say("{} Musisz mieć wystarczającą ilość EV na koncie, żeby "
-                               "zagrać w jednorękiego bandytę.".format(author.mention))
+            await self.bot.say("{} Musisz miec wystarczajaca ilosc EV na koncie, zeby "
+                               "zagrac w jednorekiego bandyte.".format(author.mention))
         except OnCooldown:
-            await self.bot.say("Zaraz oderwiesz drugą rękę temu bandycie! Poczekaj jeszcze {} "
-                               "sekund, żeby zagrać znowu.".format(slot_time))
+            await self.bot.say("Zaraz oderwiesz druga reke temu bandycie! Poczekaj jeszcze {} "
+                               "sekund, zeby zagrac znowu.".format(slot_time))
         except InvalidBid:
             await self.bot.say("Bid must be between {} and {}."
                                "".format(settings["SLOT_MIN"],
@@ -577,20 +575,20 @@ class Economy:
             pay = payout["payout"](bid)
             now = then - bid + pay
             self.bank.set_credits(author, now)
-            await self.bot.say("{}\n{} {}\n\nTwoja Stawka: {}\n{} → {}!"
+            await self.bot.say("{}\n{} {}\n\nTwoja Stawka: {}\n{} -> {}!"
                                "".format(slot, author.mention,
                                          payout["phrase"], bid, then, now))
         else:
             then = self.bank.get_balance(author)
             self.bank.withdraw_credits(author, bid)
             now = then - bid
-            await self.bot.say("{}\n{} Nic!\nTwoja Stawka: {}\n{} → {}!"
+            await self.bot.say("{}\n{} Nic!\nTwoja Stawka: {}\n{} -> {}!"
                                "".format(slot, author.mention, bid, then, now))
 
     @commands.group(pass_context=True, no_pm=True)
     @checks.admin_or_permissions(manage_server=True)
     async def economyset(self, ctx):
-        """Zmienia ustawienia modułu ekonomii"""
+        """Zmienia ustawienia modulu ekonomii"""
         server = ctx.message.server
         settings = self.settings[server.id]
         if ctx.invoked_subcommand is None:
@@ -603,54 +601,54 @@ class Economy:
 
     @economyset.command(pass_context=True)
     async def slotmin(self, ctx, bid: int):
-        """Minimalna stawka do zagrania w jednorękiego bandytę"""
+        """Minimalna stawka do zagrania w jednorekiego bandyte"""
         server = ctx.message.server
         self.settings[server.id]["SLOT_MIN"] = bid
-        await self.bot.say("Minimalna stawka dla jednorękiego bandyty wynosi teraz {} EV.".format(bid))
+        await self.bot.say("Minimalna stawka dla jednorekiego bandyty wynosi teraz {} EV.".format(bid))
         dataIO.save_json(self.file_path, self.settings)
 
     @economyset.command(pass_context=True)
     async def slotmax(self, ctx, bid: int):
-        """Maksymalna stawka do zagrania w jednorękiego bandytę"""
+        """Maksymalna stawka do zagrania w jednorekiego bandyte"""
         server = ctx.message.server
         self.settings[server.id]["SLOT_MAX"] = bid
-        await self.bot.say("Maksymalna stawka dla jednorękiego bandyty wynosi teraz {} EV.".format(bid))
+        await self.bot.say("Maksymalna stawka dla jednorekiego bandyty wynosi teraz {} EV.".format(bid))
         dataIO.save_json(self.file_path, self.settings)
 
     @economyset.command(pass_context=True)
     async def slottime(self, ctx, seconds: int):
-        """Okres oczekiwania pomiędzy grami w jednorękiego bandytę w sekundach"""
+        """Okres oczekiwania pomiedzy grami w jednorekiego bandyte w sekundach"""
         server = ctx.message.server
         self.settings[server.id]["SLOT_TIME"] = seconds
-        await self.bot.say("Czas oczekiwania na kolejną grę w jednorękiego bandytę wynosi teraz {} sekund.".format(seconds))
+        await self.bot.say("Czas oczekiwania na kolejna gre w jednorekiego bandyte wynosi teraz {} sekund.".format(seconds))
         dataIO.save_json(self.file_path, self.settings)
 
     @economyset.command(pass_context=True)
     async def paydaytime(self, ctx, seconds: int):
-        """Okres oczekiwania pomiędzy wypłatami w sekundach"""
+        """Okres oczekiwania pomiedzy wyplatami w sekundach"""
         server = ctx.message.server
         self.settings[server.id]["PAYDAY_TIME"] = seconds
-        await self.bot.say("Wartość została zmieniona. Co najmniej {} sekund musi minąć "
-                           "pomiędzy wypłatami.".format(seconds))
+        await self.bot.say("Wartosc zostala zmieniona. Co najmniej {} sekund musi minac "
+                           "pomiedzy wyplatami.".format(seconds))
         dataIO.save_json(self.file_path, self.settings)
 
     @economyset.command(pass_context=True)
     async def paydaycredits(self, ctx, credits: int):
-        """Ilość waluty wydawanej przy wypłacie"""
+        """Ilosc waluty wydawanej przy wyplacie"""
         server = ctx.message.server
         self.settings[server.id]["PAYDAY_CREDITS"] = credits
-        await self.bot.say("Każda wypłata teraz będzie dawać {} EV."
+        await self.bot.say("Kazda wyplata teraz bedzie dawac {} EV."
                            "".format(credits))
         dataIO.save_json(self.file_path, self.settings)
 
     @economyset.command(pass_context=True)
     async def registercredits(self, ctx, credits: int):
-        """Ilość waluty wydawanej przy rejestracji nowego konta"""
+        """Ilosc waluty wydawanej przy rejestracji nowego konta"""
         server = ctx.message.server
         if credits < 0:
             credits = 0
         self.settings[server.id]["REGISTER_CREDITS"] = credits
-        await self.bot.say("Rejestracja nowego konta przyznawać teraz będzie {} EV."
+        await self.bot.say("Rejestracja nowego konta przyznawac teraz bedzie {} EV."
                            "".format(credits))
         dataIO.save_json(self.file_path, self.settings)
 

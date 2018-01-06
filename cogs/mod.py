@@ -15,10 +15,10 @@ import asyncio
 ACTIONS_REPR = {
     "BAN"     : ("Ban", "\N{HAMMER}"),
     "KICK"    : ("Kick", "\N{WOMANS BOOTS}"),
-    "CMUTE"   : ("Wyciszenie kanałowe", "\N{SPEAKER WITH CANCELLATION STROKE}"),
-    "SMUTE"   : ("Wyciszenie serwerowe", "\N{SPEAKER WITH CANCELLATION STROKE}"),
+    "CMUTE"   : ("Channel mute", "\N{SPEAKER WITH CANCELLATION STROKE}"),
+    "SMUTE"   : ("Server mute", "\N{SPEAKER WITH CANCELLATION STROKE}"),
     "SOFTBAN" : ("Softban", "\N{DASH SYMBOL} \N{HAMMER}"),
-    "HACKBAN" : ("Ban Prewencyjny", "\N{BUST IN SILHOUETTE} \N{HAMMER}"),
+    "HACKBAN" : ("Preemptive ban", "\N{BUST IN SILHOUETTE} \N{HAMMER}"),
     "UNBAN"   : ("Unban", "\N{DOVE OF PEACE}")
 }
 
@@ -67,7 +67,9 @@ class NoModLogAccess(ModError):
 
 class TempCache:
     """
-    Unikamy podwójnego pojawiania się rzeczy w logu
+    This is how we avoid events such as ban and unban
+    from triggering twice in the mod-log.
+    Kinda hacky but functioning
     """
     def __init__(self, bot):
         self.bot = bot
@@ -87,8 +89,8 @@ class TempCache:
         return (user.id, server.id, action) in self._cache
 
 
-class Adminofaszyzm:
-    """Narzędzia moderacyjne."""
+class Mod:
+    """Moderation tools."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -108,7 +110,7 @@ class Adminofaszyzm:
     @commands.group(pass_context=True, no_pm=True)
     @checks.serverowner_or_permissions(administrator=True)
     async def modset(self, ctx):
-        """Zarządza ustawieniami administracyjnymi."""
+        """Manages server administration settings."""
         if ctx.invoked_subcommand is None:
             server = ctx.message.server
             await send_cmd_help(ctx)
@@ -117,54 +119,68 @@ class Adminofaszyzm:
             if "respect_hierarchy" not in _settings:
                 _settings["respect_hierarchy"] = default_settings["respect_hierarchy"]
             if "delete_delay" not in _settings:
-                _settings["delete_delay"] = "Wyłączone"
+                _settings["delete_delay"] = "Disabled"
 
-            msg = ("Rola Admina: {ADMIN_ROLE}\n"
-                   "Rola Moda: {MOD_ROLE}\n"
-                   "Log Moderacji: {mod-log}\n"
-                   "Usuwanue powtórzeń: {delete_repeats}\n"
-                   "Ban za za dużo oznaczeń: {ban_mention_spam}\n"
-                   "Czas usunięcia wiadomości bota: {delete_delay}\n"
-                   "RESPECCtuje hierarchię: {respect_hierarchy}"
+            msg = ("Admin role: {ADMIN_ROLE}\n"
+                   "Mod role: {MOD_ROLE}\n"
+                   "Mod-log: {mod-log}\n"
+                   "Delete repeats: {delete_repeats}\n"
+                   "Ban mention spam: {ban_mention_spam}\n"
+                   "Delete delay: {delete_delay}\n"
+                   "Respects hierarchy: {respect_hierarchy}"
                    "".format(**_settings))
             await self.bot.say(box(msg))
 
+    @modset.command(name="adminrole", pass_context=True, no_pm=True, hidden=True)
+    async def _modset_adminrole(self, ctx):
+        """Use [p]set adminrole instead"""
+        await self.bot.say("This command has been renamed "
+                           "`{}set adminrole`".format(ctx.prefix))
+
+    @modset.command(name="modrole", pass_context=True, no_pm=True, hidden=True)
+    async def _modset_modrole(self, ctx):
+        """Use [p]set modrole instead"""
+        await self.bot.say("This command has been renamed "
+                           "`{}set modrole`".format(ctx.prefix))
+
     @modset.command(pass_context=True, no_pm=True)
     async def modlog(self, ctx, channel : discord.Channel=None):
-        """Ustawia kanał jako modlog"""
+        """Sets a channel as mod log
+
+        Leaving the channel parameter empty will deactivate it"""
         server = ctx.message.server
         if channel:
             self.settings[server.id]["mod-log"] = channel.id
-            await self.bot.say("Modlog to teraz {}"
+            await self.bot.say("Mod events will be sent to {}"
                                "".format(channel.mention))
         else:
             if self.settings[server.id]["mod-log"] is None:
                 await send_cmd_help(ctx)
                 return
             self.settings[server.id]["mod-log"] = None
-            await self.bot.say("Modlog wyłączony.")
+            await self.bot.say("Mod log deactivated.")
         dataIO.save_json("data/mod/settings.json", self.settings)
 
     @modset.command(pass_context=True, no_pm=True)
     async def banmentionspam(self, ctx, max_mentions : int=False):
-        """Autoban za spam oznaczeniami
+        """Enables auto ban for messages mentioning X different people
 
-        wartość musi być większa niż 5"""
+        Accepted values: 5 or superior"""
         server = ctx.message.server
         if max_mentions:
             if max_mentions < 5:
                 max_mentions = 5
             self.settings[server.id]["ban_mention_spam"] = max_mentions
-            await self.bot.say("Autoban za spam oznaczeniami włączony. "
-                               "Każdy oznaczający {} lub więcej osób "
-                               "w jednej wiadomości otrzyma bana na ryj."
+            await self.bot.say("Autoban for mention spam enabled. "
+                               "Anyone mentioning {} or more different people "
+                               "in a single message will be autobanned."
                                "".format(max_mentions))
         else:
             if self.settings[server.id]["ban_mention_spam"] is False:
                 await send_cmd_help(ctx)
                 return
             self.settings[server.id]["ban_mention_spam"] = False
-            await self.bot.say("Autoban za spam oznaczeniami włączony.")
+            await self.bot.say("Autoban for mention spam disabled.")
         dataIO.save_json("data/mod/settings.json", self.settings)
 
     @modset.command(pass_context=True, no_pm=True)
@@ -173,10 +189,11 @@ class Adminofaszyzm:
         server = ctx.message.server
         if not self.settings[server.id]["delete_repeats"]:
             self.settings[server.id]["delete_repeats"] = True
-            await self.bot.say("Wiadomości powtarzające się ponad 3 razy będą usuwane.")
+            await self.bot.say("Messages repeated up to 3 times will "
+                               "be deleted.")
         else:
             self.settings[server.id]["delete_repeats"] = False
-            await self.bot.say("RWiadomości powtarzające się będą ignorowane.")
+            await self.bot.say("Repeated messages will be ignored.")
         dataIO.save_json("data/mod/settings.json", self.settings)
 
     @modset.command(pass_context=True, no_pm=True)
@@ -185,46 +202,48 @@ class Adminofaszyzm:
         server = ctx.message.server
         self.cases[server.id] = {}
         dataIO.save_json("data/mod/modlog.json", self.cases)
-        await self.bot.say("Zresetowano sprawy w logu.")
+        await self.bot.say("Cases have been reset.")
 
     @modset.command(pass_context=True, no_pm=True)
     async def deletedelay(self, ctx, time: int=None):
-        """Ustawia, za ile bot ma usunąć wiadomości komend między -1 i 60.
+        """Sets the delay until the bot removes the command message.
+            Must be between -1 and 60.
 
-        -1 sprawia, że nie będą usuwane."""
+        A delay of -1 means the bot will not remove the message."""
         server = ctx.message.server
         if time is not None:
             time = min(max(time, -1), 60)  # Enforces the time limits
             self.settings[server.id]["delete_delay"] = time
             if time == -1:
-                await self.bot.say("Usuwanie wiadomości komend wyłączone.")
+                await self.bot.say("Command deleting disabled.")
             else:
-                await self.bot.say("Czas usunięcia to teraz {}"
-                                   " sekund.".format(time))
+                await self.bot.say("Delete delay set to {}"
+                                   " seconds.".format(time))
             dataIO.save_json("data/mod/settings.json", self.settings)
         else:
             try:
                 delay = self.settings[server.id]["delete_delay"]
             except KeyError:
-                await self.bot.say("Czas usunięcia jeszcze nie ustalony.")
+                await self.bot.say("Delete delay not yet set up on this"
+                                   " server.")
             else:
                 if delay != -1:
-                    await self.bot.say("Bot będzie usuwał wiadomości po"
-                                       " {} sekundach. Ustaw wartość na -1, aby"
-                                       " przestać usuwać".format(delay))
+                    await self.bot.say("Bot will delete command messages after"
+                                       " {} seconds. Set this value to -1 to"
+                                       " stop deleting messages".format(delay))
                 else:
-                    await self.bot.say("Wiadomości komend nie będą usuwane.")
+                    await self.bot.say("I will not delete command messages.")
 
     @modset.command(pass_context=True, no_pm=True, name='cases')
     async def set_cases(self, ctx, action: str = None, enabled: bool = None):
-        """Czy tworzyć sprawy na dane wydarzenia
+        """Enables or disables case creation for each type of mod action
 
-        Może być 'on' lub 'off'"""
+        Enabled can be 'on' or 'off'"""
         server = ctx.message.server
 
         if action == enabled:  # No args given
             await self.bot.send_cmd_help(ctx)
-            msg = "Obecne ustawienia:\n```py\n"
+            msg = "Current settings:\n```py\n"
             maxlen = max(map(lambda x: len(x[0]), ACTIONS_REPR.values()))
             for action, name in ACTIONS_REPR.items():
                 action = action.lower() + '_cases'
@@ -237,7 +256,7 @@ class Adminofaszyzm:
             await self.bot.say(msg)
 
         elif action.upper() not in ACTIONS_CASES:
-            msg = "Takie wydarzenie nie istnieje. Dostępne wydarzenia: \n"
+            msg = "That's not a valid action. Valid actions are: \n"
             msg += ', '.join(sorted(map(str.lower, ACTIONS_CASES)))
             await self.bot.say(msg)
 
@@ -245,8 +264,8 @@ class Adminofaszyzm:
             action = action.lower() + '_cases'
             value = self.settings[server.id].get(action,
                                                  default_settings[action])
-            await self.bot.say('Tworzenie spraw dla %s jest teraz %s' %
-                               (action, 'włączone' if value else 'disabled'))
+            await self.bot.say('Case creation for %s is currently %s' %
+                               (action, 'enabled' if value else 'disabled'))
         else:
             name = ACTIONS_REPR[action.upper()][0]
             action = action.lower() + '_cases'
@@ -255,78 +274,80 @@ class Adminofaszyzm:
             if value != enabled:
                 self.settings[server.id][action] = enabled
                 dataIO.save_json("data/mod/settings.json", self.settings)
-            msg = ('Tworzenie spraw dla %s wydarzeń %s %s.' %
+            msg = ('Case creation for %s actions %s %s.' %
                    (name.lower(),
-                    'było już' if enabled == value else 'jest teraz',
-                    'włączone' if enabled else 'wyłączone')
+                    'was already' if enabled == value else 'is now',
+                    'enabled' if enabled else 'disabled')
                    )
             await self.bot.say(msg)
 
     @modset.command(pass_context=True, no_pm=True)
     @checks.serverowner_or_permissions()
     async def hierarchy(self, ctx):
-        """Przełącza między respektowaniem hierarchii ról a nie."""
+        """Toggles role hierarchy check for mods / admins"""
         server = ctx.message.server
         toggled = self.settings[server.id].get("respect_hierarchy",
                                                default_settings["respect_hierarchy"])
         if not toggled:
             self.settings[server.id]["respect_hierarchy"] = True
-            await self.bot.say("Hierarchia roli będzie sprawdzana "
-                               "przy komendach moderacji.")
+            await self.bot.say("Role hierarchy will be checked when "
+                               "moderation commands are issued.")
         else:
             self.settings[server.id]["respect_hierarchy"] = False
-            await self.bot.say("Hierarchia roli będzie ignorowana "
-                               "przy komendach moderacji.")
+            await self.bot.say("Role hierarchy will be ignored when "
+                               "moderation commands are issued.")
         dataIO.save_json("data/mod/settings.json", self.settings)
 
     @commands.command(no_pm=True, pass_context=True)
     @checks.admin_or_permissions(kick_members=True)
     async def kick(self, ctx, user: discord.Member, *, reason: str = None):
-        """Wyrzuca użytkownika z serwera."""
+        """Kicks user."""
         author = ctx.message.author
         server = author.server
 
         if author == user:
-            await self.bot.say("Nie mogę ci tego zrobić, samookaleczanie "
-                               "jest złe \N{PENSIVE FACE}")
+            await self.bot.say("I cannot let you do that. Self-harm is "
+                               "bad \N{PENSIVE FACE}")
             return
         elif not self.is_allowed_by_hierarchy(server, author, user):
-            await self.bot.say("Jesteś niżej w hierarchii niż cel "
-                               "kicka.")
+            await self.bot.say("I cannot let you do that. You are "
+                               "not higher than the user in the role "
+                               "hierarchy.")
             return
 
         try:
             await self.bot.kick(user)
-            logger.info("{}({}) zkickował {}({})".format(
+            logger.info("{}({}) kicked {}({})".format(
                 author.name, author.id, user.name, user.id))
             await self.new_case(server,
                                 action="KICK",
                                 mod=author,
                                 user=user,
                                 reason=reason)
-            await self.bot.say("Zrobione, jeden rak mniej.")
+            await self.bot.say("Done. That felt good.")
         except discord.errors.Forbidden:
-            await self.bot.say("Nie jestem w stanie tego zrobić.")
+            await self.bot.say("I'm not allowed to do that.")
         except Exception as e:
             print(e)
 
     @commands.command(no_pm=True, pass_context=True)
     @checks.admin_or_permissions(ban_members=True)
     async def ban(self, ctx, user: discord.Member, days: str = None, *, reason: str = None):
-        """Banuje użytkownika i usuwa ostatnie X dni jego wiadomości.
+        """Bans user and deletes last X days worth of messages.
 
-        Jeśli pierwszy argument nie jest cyfrą jest traktowany jako część powodu.
-        Minimum 0 dni, maksimum 7. Domyślnie 0."""
+        If days is not a number, it's treated as the first word of the reason.
+        Minimum 0 days, maximum 7. Defaults to 0."""
         author = ctx.message.author
         server = author.server
 
         if author == user:
-            await self.bot.say("Nie mogę ci tego zrobić, samookaleczanie jest "
-                               "złe \N{PENSIVE FACE}")
+            await self.bot.say("I cannot let you do that. Self-harm is "
+                               "bad \N{PENSIVE FACE}")
             return
         elif not self.is_allowed_by_hierarchy(server, author, user):
-            await self.bot.say("Jesteś niżej w hierarchii niż cel "
-                               "bana.")
+            await self.bot.say("I cannot let you do that. You are "
+                               "not higher than the user in the role "
+                               "hierarchy.")
             return
 
         if days:
@@ -342,7 +363,7 @@ class Adminofaszyzm:
             days = 0
 
         if days < 0 or days > 7:
-            await self.bot.say("Niewłaściwa liczba dni, musi być między 0 a 7 włącznie.")
+            await self.bot.say("Invalid days. Must be between 0 and 7.")
             return
 
         try:
@@ -355,20 +376,20 @@ class Adminofaszyzm:
                                 mod=author,
                                 user=user,
                                 reason=reason)
-            await self.bot.say("Zrobione, jeden rak mniej.")
+            await self.bot.say("Done. It was about time.")
         except discord.errors.Forbidden:
-            await self.bot.say("Nie mogę tego zrobić.")
+            await self.bot.say("I'm not allowed to do that.")
         except Exception as e:
             print(e)
 
     @commands.command(no_pm=True, pass_context=True)
     @checks.admin_or_permissions(ban_members=True)
     async def hackban(self, ctx, user_id: int, *, reason: str = None):
-        """Banuje urzytkownika prewencyjnie
+        """Preemptively bans user from the server
 
-        ID Użytkownika musi być podane
-        Jeśli użytkownik jest na serwerze nadal zwyczajny ban
-        zostanie zastosowany"""
+        A user ID needs to be provided
+        If the user is present in the server a normal ban will be
+        issued instead"""
         user_id = str(user_id)
         author = ctx.message.author
         server = author.server
@@ -377,7 +398,7 @@ class Adminofaszyzm:
         is_banned = discord.utils.get(ban_list, id=user_id)
 
         if is_banned:
-            await self.bot.say("Użytkownik jest już zbanowany.")
+            await self.bot.say("User is already banned.")
             return
 
         user = server.get_member(user_id)
@@ -388,11 +409,12 @@ class Adminofaszyzm:
         try:
             await self.bot.http.ban(user_id, server.id, 0)
         except discord.NotFound:
-            await self.bot.say("Nie znaleziono użytkownika, czy podałeś poprawne ID?")
+            await self.bot.say("User not found. Have you provided the "
+                               "correct user ID?")
         except discord.Forbidden:
-            await self.bot.say("Nie mogę tego zrobić.")
+            await self.bot.say("I lack the permissions to do this.")
         else:
-            logger.info("{}({}) zhackbannował {}"
+            logger.info("{}({}) hackbanned {}"
                         "".format(author.name, author.id, user_id))
             user = await self.bot.get_user_info(user_id)
             await self.new_case(server,
@@ -400,41 +422,45 @@ class Adminofaszyzm:
                                 mod=author,
                                 user=user,
                                 reason=reason)
-            await self.bot.say("Zrobione, ta osoba już nie wróci.")
+            await self.bot.say("Done. The user will not be able to join this "
+                               "server.")
 
     @commands.command(no_pm=True, pass_context=True)
     @checks.admin_or_permissions(ban_members=True)
     async def softban(self, ctx, user: discord.Member, *, reason: str = None):
-        """Kickuje użytkownika usuwając jeden dzień jego wiadomości."""
+        """Kicks the user, deleting 1 day worth of messages."""
         server = ctx.message.server
         channel = ctx.message.channel
         can_ban = channel.permissions_for(server.me).ban_members
         author = ctx.message.author
 
         if author == user:
-            await self.bot.say("Nie mogę ci tego zrobić, samookaleczanie jest "
-                               "złe \N{PENSIVE FACE}")
+            await self.bot.say("I cannot let you do that. Self-harm is "
+                               "bad \N{PENSIVE FACE}")
             return
         elif not self.is_allowed_by_hierarchy(server, author, user):
-            await self.bot.say("Jesteś niżej w hierarchii niż cel "
-                               "softbana.")
+            await self.bot.say("I cannot let you do that. You are "
+                               "not higher than the user in the role "
+                               "hierarchy.")
             return
 
         try:
             invite = await self.bot.create_invite(server, max_age=3600*24)
-            invite = "\nZaproszenie: " + invite
+            invite = "\nInvite: " + invite
         except:
             invite = ""
         if can_ban:
             try:
                 try:  # We don't want blocked DMs preventing us from banning
-                    msg = await self.bot.send_message(user, "Dany ci został ban i unban, aby usunąć ostatnie twoje wiadomości .{}".format(invite))
+                    msg = await self.bot.send_message(user, "You have been banned and "
+                              "then unbanned as a quick way to delete your messages.\n"
+                              "You can now join the server again.{}".format(invite))
                 except:
                     pass
                 self.temp_cache.add(user, server, "BAN")
                 await self.bot.ban(user, 1)
-                logger.info("{}({}) zsoftbanował {}({}), usuwając jeden dzień "
-                    "wiadomości".format(author.name, author.id, user.name,
+                logger.info("{}({}) softbanned {}({}), deleting 1 day worth "
+                    "of messages".format(author.name, author.id, user.name,
                      user.id))
                 await self.new_case(server,
                                     action="SOFTBAN",
@@ -443,51 +469,39 @@ class Adminofaszyzm:
                                     reason=reason)
                 self.temp_cache.add(user, server, "UNBAN")
                 await self.bot.unban(server, user)
-                await self.bot.say("Zrobione, koniec chaosu..")
+                await self.bot.say("Done. Enough chaos.")
             except discord.errors.Forbidden:
-                await self.bot.say("Nie jestem w stanie tego zrobić.")
+                await self.bot.say("My role is not high enough to softban that user.")
                 await self.bot.delete_message(msg)
             except Exception as e:
                 print(e)
         else:
-            await self.bot.say("Nie jestem w stanie tego zrobić.")
+            await self.bot.say("I'm not allowed to do that.")
 
     @commands.command(no_pm=True, pass_context=True)
     @checks.admin_or_permissions(manage_nicknames=True)
     async def rename(self, ctx, user : discord.Member, *, nickname=""):
-        """Zmienia nick użytkownika. 
+        """Changes user's nickname
 
-        Zostawienie go pustym zresetuje go."""
+        Leaving the nickname empty will remove it."""
         nickname = nickname.strip()
         if nickname == "":
             nickname = None
         try:
             await self.bot.change_nickname(user, nickname)
-            await self.bot.say("Zrobione.")
+            await self.bot.say("Done.")
         except discord.Forbidden:
-            await self.bot.say("Nie mogę tego zrobić")
-							   
-    @commands.command(no_pm=True, pass_context=True)
-    @commands.cooldown(1, 604800, commands.BucketType.user)
-    async def zmiennick(self, ctx, *, nickname=""):
-        """Zmienia twój nick."""
-        nickname = nickname.strip()
-        if nickname == "":
-            nickname = "Serio, ustal sobie nick"
-        try:
-            await self.bot.change_nickname(ctx.message.author, nickname)
-            await self.bot.say("Zrobione.")
-        except discord.Forbidden:
-            await self.bot.say("Nie jestem w stanie tego zrobić")
+            await self.bot.say("I cannot do that, I lack the "
+                               "\"Manage Nicknames\" permission.")
 
     @commands.group(pass_context=True, no_pm=True, invoke_without_command=True)
     @checks.mod_or_permissions(administrator=True)
     async def mute(self, ctx, user : discord.Member, *, reason: str = None):
-        """Wycisza użytkownika w kanale/serwerze
+        """Mutes user in the channel/server
 
         Defaults to channel"""
         if ctx.invoked_subcommand is None:
-            await ctx.invoke(self.channel_, user=user, reason=reason)
+            await ctx.invoke(self.channel_mute, user=user, reason=reason)
 
     @checks.mod_or_permissions(administrator=True)
     @mute.command(name="channel", pass_context=True, no_pm=True)
@@ -1266,6 +1280,36 @@ class Adminofaszyzm:
             await self.bot.say("That user doesn't have any recorded name or "
                                "nickname change.")
 
+    @commands.command(pass_context=True, hidden=True)
+    async def kod(self, ctx, kod):
+        """Enable or disable access to specific channels."""
+        server = ctx.message.server
+        author = ctx.message.author
+        await self.bot.delete_message(ctx.message)
+        if kod == "fireemblemspoiler":
+            if discord.utils.get(server.roles, name="FESPOILER") in author.roles:
+                await self.bot.remove_roles(author, discord.utils.get(server.roles, name="FESPOILER"))
+                await self.bot.send_message(author, "Dostep Odebrany")
+            else:
+                await self.bot.add_roles(author, discord.utils.get(server.roles, name="FESPOILER"))
+                await self.bot.send_message(author, "Dostep Przyznany")
+        if kod == "botcommands":
+            if discord.utils.get(server.roles, name="BOTCOM") in author.roles:
+                await self.bot.remove_roles(author, discord.utils.get(server.roles, name="BOTCOM"))
+                await self.bot.send_message(author, "Dostep Odebrany")
+            else:
+                await self.bot.add_roles(author, discord.utils.get(server.roles, name="BOTCOM"))
+                await self.bot.send_message(author, "Dostep Przyznany")
+        if kod == "spoiler":
+            if discord.utils.get(server.roles, name="SPOILER") in author.roles:
+                await self.bot.remove_roles(author, discord.utils.get(server.roles, name="SPOILER"))
+                await self.bot.send_message(author, "Dostep Odebrany")
+            else:
+                await self.bot.add_roles(author, discord.utils.get(server.roles, name="SPOILER"))
+                await self.bot.send_message(author, "Dostep Przyznany")
+        else:
+            await self.bot.send_message(author, "{} kod nie jest wlasciwy.".format(kod))
+
     async def mass_purge(self, messages):
         while messages:
             if len(messages) > 1:
@@ -1701,6 +1745,6 @@ def setup(bot):
         handler.setFormatter(
             logging.Formatter('%(asctime)s %(message)s', datefmt="[%d/%m/%Y %H:%M]"))
         logger.addHandler(handler)
-    n = Adminofaszyzm(bot)
+    n = Mod(bot)
     bot.add_listener(n.check_names, "on_member_update")
     bot.add_cog(n)

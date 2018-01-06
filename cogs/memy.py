@@ -26,11 +26,6 @@ class Memy:
         await self._meme(ctx, msg)
 
     # 3dshacks memes
-    @commands.command(pass_context=True, hidden=True)
-    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
-    async def mejlej(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i3.kym-cdn.com/photos/images/original/000/811/792/400.jpg")
 
     @commands.command(pass_context=True, hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -61,6 +56,12 @@ class Memy:
     async def delet(self, ctx):
         """Memes."""
         await self._meme(ctx, "https://i.imgur.com/oUIjmIB.jpg")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def salt(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://i.imgur.com/lCF7wU9.jpg")
 
     @commands.command(pass_context=True, hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -121,6 +122,12 @@ class Memy:
     async def sowe(self, ctx):
         """Memes."""
         await self._meme(ctx, "NOSZ KURWA SOWE")		
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def amen(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://i.imgur.com/74LAiU5.jpg")		
 
     @commands.command(pass_context=True, hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -200,13 +207,6 @@ class Memy:
     async def gottagofat(self, ctx):
         """Memes."""
         await self._meme(ctx, "https://cdn.discordapp.com/attachments/338350771907067905/340143683414261772/received_1304525799664741.gif")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def niko(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "https://s-media-cache-ak0.pinimg.com/236x/87/eb/fa/87ebfa00352db446917d8654cbe505cd--one-shot-game-niko-niko-oneshot.jpg")
-        await self._meme(ctx, "**=**")
-        await self._meme(ctx, "https://static.pexels.com/photos/126407/pexels-photo-126407.jpeg")
 
     @commands.command(pass_context=True, hidden=True)
     async def abaitening(self, ctx):
@@ -330,20 +330,10 @@ class Memy:
         """Memes."""
         await self._meme(ctx, "http://lh5.ggpht.com/-HpiQO1VzJ9I/UKqFah7EB8I/AAAAAAAABFU/TS8PpaF_IVE/image_thumb%25255B2%25255D.png?imgmax=800")
 
-    @commands.command(pass_context=True, hidden=True)		
-    async def przestraszmajke(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://pm1.narvii.com/6409/ba4e6a9d8361d2aa00ea393fb2d50952d2e4dc4b_hq.jpg")
-
     @commands.command(pass_context=True, hidden=True)
     async def smolbricc(self, ctx):
         """Memes."""
-        await self._meme(ctx, "http://cdn2.ubergizmo.com/wp-content/uploads/2011/03/nintendo-bricked-3DS.jpg")		
- 		
-    @commands.command(pass_context=True, hidden=True)
-    async def switchhax(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "https://cdn.discordapp.com/attachments/246739894511206410/290463418748633088/IbBzwiv.jpg")		
+        await self._meme(ctx, "http://cdn2.ubergizmo.com/wp-content/uploads/2011/03/nintendo-bricked-3DS.jpg")			
  		
     @commands.command(pass_context=True, hidden=True)
     async def ripcorn(self, ctx):
@@ -373,14 +363,7 @@ class Memy:
     @commands.command(pass_context=True, hidden=True)
     async def imcorny(self, ctx):
         """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/6a5XNau.jpg")		
- 		
-    @commands.command(pass_context=True, hidden=True)
-    async def przestraszraidena(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "Nic nie może przestraszyć Raidena")
-        await self._meme(ctx, "3x !warn Raiden")
-        await self._meme(ctx, "Cofam, tylko jedna rzecz moze przestraszyc Raidena")		
+        await self._meme(ctx, "http://i.imgur.com/6a5XNau.jpg")			
  		
     @commands.command(pass_context=True, hidden=True)
     async def targetacquired(self, ctx):
@@ -434,6 +417,68 @@ class Memy:
     async def pepe(self, ctx):
         """Memes."""
         await self._meme(ctx, "https://lh3.googleusercontent.com/j5fD3m5qXRNtGYDuajhEtS_etFvU8FE5PogmqTY2hrshDG0_urf_UBeVAyJljoCxdf4=w300")		
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def tutek(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://imgur.com/dQ129Do")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def boner(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://imgur.com/fa39o6o")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def ship2(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://imgur.com/5JZJqte")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def derpcopter(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://78.media.tumblr.com/2e45535e0e318bd217db408a662bac5e/tumblr_msdn5wKNQf1sgrojoo1_500.gif")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def urus(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://imgur.com/2dyPgLj") 
+    
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def soweban(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://imgur.com/HsW18En")
+    	
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def money(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://imgur.com/bvhk33y")
+    	
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def pastmoney(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://imgur.com/ym2X6p6")
+    	
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def shipisreal(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://imgur.com/fhx6J2J")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def winogron(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://imgur.com/XsCfVDP")		
+
+
 
 # Load the extension
 def setup(bot):

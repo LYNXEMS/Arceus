@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-# from discord.ext.commands import cooldown
+from discord.ext.commands import cooldown
 from sys import argv
 
 class Zasady:
@@ -31,7 +31,7 @@ class Zasady:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def z1(self):
         """Displays rule 1."""
-        await self.simple_embed("Na czatach obowiązuje atmosfera wspólnego szanowania. Jeśli masz z kimś problem, załatw go na kanale prywatnym. Nie psuj dnia i krwi innym.", title="Zasada 1")
+        await self.simple_embed("1. Na czatach obowiązuje atmosfera wspólnego szanowania. Jeśli masz z kimś problem, załatw go na kanale prywatnym. Nie psuj dnia i krwi innym.", title="Zasada 1")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -43,25 +43,25 @@ class Zasady:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def z3(self):
         """Displays rule 3."""
-        await self.simple_embed("Na czatach nie nalezy wkraczac do tematow innych czatow. Spam, materialy NSFW i dlugie wiadomosci (Ktore nie sa na Hastebinie itp.) sa zakazane chyba ze powiedziane jest inaczej.", title="Zasada 3")
+        await self.simple_embed("Nie spamuj i staraj się zachować wypowiedzi w dobrej jakości bez wywoływania i kontynuacji dram, nadmiaru emotek itp. Dla dłuższych tekstów używaj stron jak https://hastebin.com/.", title="Zasada 3")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def z4(self):
         """Displays rule 4."""
-        await self.simple_embed("Dodatkowe zasady kazdego czatu i ich tematy sa w przypietych wiadmosciach danych czatow.", title="Zasada 4")
+        await self.simple_embed("4. Na czatach nie należy wkraczać do tematów innych czatów. Spam, materiały NSFW i długie wiadomości (Które nie są na Hastebinie itp.) są zakazane, chyba że powiedziane jest inaczej.", title="Zasada 4")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def z5(self):
         """Displays rule 5."""
-        await self.simple_embed("Dyskusje o Friend Code i Dodawaniu się do znajomych powinny byc obslugiwane przez komendy `!fcdodaj3ds` i `!fcznajdz3ds`. Najlepiej uzywac ich na czatach #walki-i-trading albo #hacking. W plikach grupy na Fecebooku istnieje tez Lista FC do ktorej mozna sie dodac.", title="Zasada 5")
+        await self.simple_embed("Jedno konto na użytkownika. Boty na kontach użytkowników dostępne na cały server są zakazane. Jeśli chcesz zmienić konto, najpierw wyjdź starym.", title="Zasada 5")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def z6(self):
         """Displays rule 6."""
-        await self.simple_embed("W przypadku naruszenia regulaminu administracja może ukarać użytkownika łamiącego regulamin ostrzeżeniem. Trzy ostrzeżenia oznaczają usuniecie z czatu na czas w zaleznosci od wykroczen.", title="Zasada 6")
+        await self.simple_embed("Zasada o piractwie... Nie pytaj się jak piracić gry. Nie dziel się materiałem objętym prawami autorskimi. Nie wspominaj o narzędziach stworzonych tylko do piracenia.", title="Zasada 6")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -73,43 +73,79 @@ class Zasady:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def z8(self):
         """Displays rule 8."""
-        await self.simple_embed("Jakiekolwiek przyznawanie się do piractwa, postowanie nielegalnie zawartości objętej prawami autorskimi (pliki CIA, CCX, 3DS, WUD, WBFS, ISO, GCN, Titlekeye) lub stron zawierających takie rzeczy są SUROWO ZAKAZANE.", title="Zasada 8")
+        await self.simple_embed("Nie wysyłaj informacji osobistych (także prywatnych konwersacji) bez zgody.", title="Zasada 8")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def z9(self):
         """Displays rule 7."""
-        await self.simple_embed("Jakakolwiek próba reklamowania (m. in. innych grup i fanpage) bez zgody administracji jest zakazana. Dotyczy to takze ofert handlowych. Publikacja **własnego OC** (original content) jest natomiast mile widziana", title="Zasada 9")
+        await self.simple_embed("Zapytaj się Administracji przed reklamowaniem czegokolwiek i zaczekaj na zgodę. Dotyczy to także ofert handlowych. Publikacja własnego OC (original content) jest natomiast mile widziana.", title="Zasada 9")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def z10(self):
         """Displays rule 8."""
-        await self.simple_embed("Samobójstwo i samookaleczenie nie są tematem do żartów, bo uniemożliwiają naprawdę potrzebującym dostęp do odpowiedniej pomocy. Jeśli myślisz, że masz problem skontaktuj się ze specjalistą lub uzyskaj pomoc pod tym adresem: www.telefonzaufania.org.pl", title="Zasada 10")
+        await self.simple_embed("Odpowiednie tematy powinny pojawiać się na odpowiednich kanałach. Każdy kanał ma swój temat w opisie kanału i nazwie. Inne tematy lecą na #off-topy lub #off-topy-dwa .", title="Zasada 10")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def z11(self):
         """Displays rule 8."""
-        await self.simple_embed("Ujawnianie ważnych szczegółów fabuły gier, filmów, książek i innych tekstów kultury młodszych niż siedem lat bez ostrzeżenia i zgody współrozmówców jest zabronione. Szczególnie karane będzie celowe wyjawianie szczegółów fabuły tekstów kultury osobie, która jest w trackie przechodzenia, oglądania, czytania itp. Dotyczy to wtedy również starszych dzieł.", title="Zasada 11")
+        await self.simple_embed("Próba unikania zasad będzie uznawana za łamanie ich.", title="Zasada 11")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def z12(self):
-        """Displays rule 8."""
-        await self.simple_embed("Pierwszy i ostatni punkt pełnią rolę punktu zdrowego rozsądku. Jeżeli coś nie jest ujęte w regulaminie, a według administracji zasługuje na potępienie, to osoba funkcyjna ma prawo ukarać użytkownika za dany czyn. Ma to na celu opanowanie bezprecedensowych sytuacji.", title="Zasada 12")
+        """Zasada 12."""
+        await self.simple_embed("Dyskusje o Friend Code i dodawaniu się do znajomych powinny być obsługiwane przez bota. W plikach grupy na Facebooku istnieje też Lista FC do której można się dodać.", title="Zasada 12")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def z13(self):
-        """Displays rule 8."""
-        await self.simple_embed("Ponownie. Szanujmy siebie nawzajem, nie ma absolutnie żadnej potrzeby niszczenia milej atmosfery. Glaskanie adminisracje nie jest zabronione, ale nie jestesmy odpowiedzialni za ugryzienia i oparzenia (szczegolnie te spowodowane przez smoki)", title="Zasada 13")
+        """Zasada 13."""
+        await self.simple_embed("Ujawnianie ważnych szczegółów fabuły gier, filmów, książek i innych tekstów kultury młodszych niż siedem lat bez ostrzeżenia i zgody współrozmówców jest zabronione. Szczególnie karane będzie celowe wyjawianie szczegółów fabuły tekstów kultury osobie, która jest w trackie przechodzenia, oglądania, czytania itp. Dotyczy to wtedy również starszych dzieł. Punkt ten nie obowiązuje na kanale #spoilery.", title="Zasada 13")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def newb(self):
-        """Displays rule 8."""
-        await self.simple_embed("Sugerujemy zweryfikowanie się, żeby uzyskać uprawnienia do wysyłania załączników i rozmawiania na naszych czatach głosowych. Aby to zrobić, należy dołączyć do jednej z naszych zapartnerowanych grup (Polska Społeczność Pokemon, lub Fire Emblem Polska) oraz podać swoją nazwę użytkownika z Facebooka w prywatnej wiadomości członkowi administracji (zielony, niebieski lub różowy kolor nicku). Zapoznaj się z naszym regulaminem i życzymy miłego pobytu na naszym serwerze!", title="Witaj na serwerze Polskiej Społeczności Nintendo!")
+    async def z14(self):
+        """Zasada 14."""
+        await self.simple_embed("Pierwszy i ostatni punkt pełnią rolę punktu zdrowego rozsądku. Jeżeli coś nie jest ujęte w regulaminie, a według administracji zasługuje na potępienie, to osoba funkcyjna ma prawo ukarać użytkownika za dany czyn. Ma to na celu opanowanie bezprecedensowych sytuacji.", title="Zasada 14")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def z15(self):
+        """Zasada 14."""
+        await self.simple_embed("Ponownie. Szanujmy siebie nawzajem, nie ma absolutnie żadnej potrzeby niszczenia milej atmosfery. Głaskanie administracji nie jest zabronione, ale nie jesteśmy odpowiedzialni za ugryzienia i oparzenia (szczególnie te spowodowane przez smoki).", title="Zasada 15")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def nickiavatary(self):
+        """Zasada 14."""
+        await self.simple_embed("Nicki powinny składać się ze znaków dostępnych na klawiaturze dla tagowania. Administracja może nadać nick nie do zmiany jeśli to zostanie spełnione. Avatary i nicki nie mogą zawierać nic NSFW lub obraźliwego. Nick można zmieniać raz na tydzień komendą `.zmiennick`", title="O Nickach i Avatarach")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def interwencje(self):
+        """Interwencje Administracji."""
+        await self.simple_embed("Łamanie zasad spowoduje interwencję administracji i kary: Warny, Kicki, Bany, Grzywny w walucie serwerowej lub inne kary.", title="Interwenja Administracji")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def zaproszenie(self):
+        """Link zaproszeniowy."""
+        await self.simple_embed("To jest permanentny link do servera! Śmiało zapraszaj znajomych. https://discord.gg/hyeeahd", title="Zaproszenie")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def kody(self):
+        """Link zaproszeniowy."""
+        await self.simple_embed("Widoczność niektórych czaty można w pelni włączyc lub wyłączyć, ta komenda będzie także używana do eventów. Komenda ta to `!kod <kod>`. A wiec kody ktore zostaja upublicznione to: `botcommands` dla kanału #bot dla testowania bota i `spoiler` dla kanału #spoilery gdzie dozwolone sa spoilery", title="Kody")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def pokespecial(self):
+        """Dzięki Nid, za partnerstwo :3."""
+        await self.simple_embed("Jeżeli chcecie dowiedzieć się czegoś więcej na temat mangi i doujinów związanej z pokemonami, zapraszamy na stronę http://pokespecial.com.pl", title="Pokespecial")
 		
 def setup(bot):
     bot.add_cog(Zasady(bot))
