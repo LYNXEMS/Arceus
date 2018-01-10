@@ -82,7 +82,7 @@ class Nsfw:
                 await self.bot.remove_roles(author, discord.utils.get(server.roles, name="❤Ż"))
                 await self.bot.remove_roles(author, discord.utils.get(server.roles, name="❤R"))
                 await self.bot.add_roles(author, discord.utils.get(server.roles, name="❤C"))
-                await self.bot.sau("Kolor Zmieniony")
+                await self.bot.say("Kolor Zmieniony")
             if kolor == "zielony":
                 await self.bot.remove_roles(author, discord.utils.get(server.roles, name="❤C"))
                 await self.bot.remove_roles(author, discord.utils.get(server.roles, name="❤N"))
