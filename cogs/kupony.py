@@ -6,7 +6,7 @@ from __main__ import send_cmd_help
 from .utils import checks
 
 
-class Coupon:
+class Kupony:
     """Tworzy kupon na EV"""
 
     def __init__(self, bot):
@@ -15,12 +15,12 @@ class Coupon:
         self.system = dataIO.load_json(self.file_path)
 
     @commands.group(pass_context=True)
-    async def coupon(self, ctx):
-        """Komendy dotyczące kuponów"""
+    async def kupon(self, ctx):
+        """Komendy dotyczace kuponow"""
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
 
-    @coupon.command(name="generuj", pass_context=True, no_pm=True)
+    @kupon.command(name="generuj", pass_context=True, no_pm=True)
     @checks.admin_or_permissions(manage_server=True)
     async def _create_coupon(self, ctx, credits: int):
         """Generuje kupon na EV"""
@@ -28,22 +28,22 @@ class Coupon:
         settings = self.check_server_settings(server)
         code = str(uuid.uuid4())
         self.coupon_add(settings, code, credits)
-        await self.bot.whisper("Kupon na {} Ev został wygenerowany .\nKod to: "
+        await self.bot.whisper("Kupon na {} Ev zostal wygenerowany .\nKod to: "
                                "{}".format(credits, code))
 
-    @coupon.command(name="czyść", pass_context=True, no_pm=True)
+    @kupon.command(name="czysc", pass_context=True, no_pm=True)
     @checks.admin_or_permissions(manage_server=True)
     async def _clearall_coupon(self, ctx):
-        """Usuwa nieużyte kody"""
+        """Usuwa nieuzyte kody"""
         server = ctx.message.server
         settings = self.check_server_settings(server)
         settings.clear()
         dataIO.save_json(self.file_path, self.system)
-        await self.bot.say("Usunięto nieużyte kody")
+        await self.bot.say("Usunieto nieuzyte kody")
 
-    @coupon.command(name="wymień", pass_context=True, no_pm=True)
+    @kupon.command(name="wymien", pass_context=True, no_pm=True)
     async def _redeem_coupon(self, ctx, coupon):
-        """Wymienia kupon na EV. Można to zrobić przez PM z botem."""
+        """Wymienia kupon na EV. Mozna to zrobic przez PM z botem."""
         server = ctx.message.server
         user = ctx.message.author
         settings = self.check_server_settings(server)
@@ -56,7 +56,7 @@ class Coupon:
                 dataIO.save_json(self.file_path, self.system)
                 await self.bot.say("Dodano {} do twojego konta".format(credits))
             else:
-                await self.bot.say("Kupon nie istnieje lub już jest użyty")
+                await self.bot.say("Kupon nie istnieje lub juz jest uzyty")
         else:
             await self.bot.say("To nie jest poprawny kod kuponu")
 
@@ -101,5 +101,5 @@ def check_files():
 def setup(bot):
     check_folders()
     check_files()
-    n = Coupon(bot)
+    n = Kupony(bot)
     bot.add_cog(n)
