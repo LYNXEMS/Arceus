@@ -23,7 +23,7 @@ import sqlite3
 from .utils.dataIO import dataIO
 from .utils import checks
 
-class db_cog:
+class konta:
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -74,13 +74,15 @@ class db_cog:
 
 		for var in db_platforms:
 			db_q_scope = self.db.execute(db_query.format(platf=var[1], uidd=uid))
-			data.append([var[1], db_q_scope.fetchone()[0]])
+			d = db_q_scope.fetchone()[0]
+			data.append([var[1], d])
 
 		msg = "\n{rest}"
 
 		for arr in data:
-			tmp = "- {a}: \"{b}\"\n%s".format(a=arr[0], b=arr[1]) % ("{rest}")
-			msg = msg.format(rest=tmp)
+			if arr[1] is not None:
+				tmp = "- {a}: \"{b}\"\n%s".format(a=arr[0], b=arr[1]) % ("{rest}")
+				msg = msg.format(rest=tmp)
 		msg = msg.format(rest="")
 		em = discord.Embed(description=msg)
 
@@ -126,4 +128,4 @@ class db_cog:
 		await self.bot.say(msg)
 
 def setup(bot):
-	bot.add_cog(db_cog(bot))
+	bot.add_cog(konta(bot))
