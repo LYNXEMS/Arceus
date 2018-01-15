@@ -138,7 +138,7 @@ class Zasady:
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def kody(self):
-        """Link zaproszeniowy."""
+        """Kody."""
         await self.simple_embed("Widoczność niektórych czaty można w pelni włączyc lub wyłączyć, ta komenda będzie także używana do eventów. Komenda ta to `!kod <kod>`. A wiec kody ktore zostaja upublicznione to: `botcommands` dla kanału #bot dla testowania bota i `spoiler` dla kanału #spoilery gdzie dozwolone sa spoilery", title="Kody")
 
     @commands.command(hidden=True)
@@ -146,6 +146,23 @@ class Zasady:
     async def pokespecial(self):
         """Dzięki Nid, za partnerstwo :3."""
         await self.simple_embed("Jeżeli chcecie dowiedzieć się czegoś więcej na temat mangi i doujinów związanej z pokemonami, zapraszamy na stronę http://pokespecial.com.pl", title="Pokespecial")
-		
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def sklep(self):
+        """Sklep."""
+        await self.simple_embed("Sklep Serwerowy:\n"
+            "Dodanie mema do bota - 5000EV\n"
+            "Dodanie mema do gotowej komendy, aby była na niego szansa przy wpisywaniu - 3000EV\n"
+            "Dodanie emoji na serwer - 10000EV max. 1 na osobę\n"
+            "Dodanie własnej odznaki (możesz ją rozdawać innym) - 3000EV\n"
+            "Dodanie koloru do listy kolorów tak długo, jak nie przypomina inne - 15000EV\n"
+            "Dodanie tła do !profile - 5000EV\n"
+            "Dodanie tła do !rank - 4000EV\n"
+            "Dodanie tła do level up - 5000EV\n"
+            "Wymuszona zmiana nicku - 2000EV\n"
+            "Pokemon BR - 3000EV, przy 6 Pokemonach 12000EV\n"
+            "Itemy w Pokemonach - 1000EV za sztukę" title="Kody")
+
 def setup(bot):
     bot.add_cog(Zasady(bot))
