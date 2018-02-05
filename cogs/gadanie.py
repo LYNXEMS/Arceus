@@ -40,7 +40,7 @@ class Gadanie:
         dest = ctx.message.mentions[0]
         await self.bot.send_message(dest, inp)
 		
-    @commands.cooldown(1, 3600, commands.BucketType.user)
+    @commands.cooldown(1, 86400, commands.BucketType.user)
     @commands.command(hidden=True, pass_context=True)
     async def zaproponuj(self, ctx, *, inp):
         server = ctx.message.server
