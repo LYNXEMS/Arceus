@@ -328,7 +328,7 @@ class Ogolne:
             await self.bot.say("I am error. Coś poszło nie tak. :< ")
 
     @commands.command(pass_context=True, no_pm=True)
-    async def ankieta(self, ctx, *text):
+    async def oankieta(self, ctx, *text):
         """Otwiera/zamyka ankietę
 
         Przykład użycia:

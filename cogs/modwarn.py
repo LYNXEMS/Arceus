@@ -86,8 +86,6 @@ class ModWarn:
             else:
                 for idx, warn in enumerate(warns[member.id]["warns"]):
                     value = ""
-                    if ctx.message.channel == self.bot.helpers_channel or ctx.message.channel == self.bot.mods_channel:
-                        value += "Wydający: " + warn["issuer_name"] + "\n"
                     value += "Powód: " + warn["reason"] + " "
                     # embed.add_field(name="{}: {}".format(key + 1, warn["timestamp"]), value="Issuer: {}\nReason: {}".format(warn["issuer_name"], warn["reason"]))
                     embed.add_field(name="{}: {}".format(idx + 1, warn["timestamp"]), value=value)

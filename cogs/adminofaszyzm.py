@@ -468,7 +468,6 @@ class Adminofaszyzm:
             await self.bot.say("Nie mogę tego zrobić")
 							   
     @commands.command(no_pm=True, pass_context=True)
-    @commands.cooldown(1, 604800, commands.BucketType.user)
     async def zmiennick(self, ctx, *, nickname=""):
         """Zmienia twój nick."""
         nickname = nickname.strip()

@@ -162,7 +162,7 @@ class Zasady:
             "Dodanie tła do level up - 5000EV\n"
             "Wymuszona zmiana nicku - 2000EV\n"
             "Pokemon BR - 3000EV, przy 6 Pokemonach 12000EV\n"
-            "Itemy w Pokemonach - 1000EV za sztukę" title="Kody")
+            "Itemy w Pokemonach - 1000EV za sztukę", title="Kody")
 
 def setup(bot):
     bot.add_cog(Zasady(bot))

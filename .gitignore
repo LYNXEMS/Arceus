@@ -1,0 +1,14 @@
+*.ini
+*.sh
+*.log
+*.json
+*.sqlite
+*.bat
+._*
+.DS_Store
+__pycache__
+data/
+lib/
+launcher.py
+requirements.txt
+requirements_no_audio.txt
