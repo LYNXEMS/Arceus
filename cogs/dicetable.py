@@ -60,6 +60,10 @@ class DiceTable:
             raise RollError("Cannot roll more than 20 instances at a time.")
 
         die, maximum = self.parse_dice(dice)
+        if die>10000:
+            raise RollError("JA CI DAM GALGANIE! SAM SE RZUCAJ TYMI KOSTKAMI!")
+        if maximum>1000000000:
+            raise RollError("Znajdź mi taką kostkę")
         rolls_raw = list(range(times))
 
         if modifier < 0:
